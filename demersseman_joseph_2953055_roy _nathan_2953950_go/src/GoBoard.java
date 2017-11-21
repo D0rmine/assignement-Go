@@ -12,6 +12,7 @@ class GoBoard extends Pane {
     private static final int NUMBER_OF_LINE = 7;
 
     private final Label[][] labels;
+    private final Translate[][] labelTranslate;
 
     // arrays for the lines that makeup the horizontal and vertical grid lines
     private final Line[] horizontal;
@@ -44,10 +45,12 @@ class GoBoard extends Pane {
         horizontal_t = new Translate[NUMBER_OF_LINE];
         vertical_t = new Translate[NUMBER_OF_LINE];
         labels = new Label[4][NUMBER_OF_LINE];
+        labelTranslate = new Translate[4][NUMBER_OF_LINE];
+
 
         initialiseLinesBackground();
         initialiseRender();
-
+        initLabels();
         resetGame();
     }
 
@@ -85,6 +88,7 @@ class GoBoard extends Pane {
 
         //resize and relocate the pieces
         pieceResizeRelocate();
+        labelResizeRelocate();
     }
 
     // public method for resetting the game
@@ -178,6 +182,23 @@ class GoBoard extends Pane {
         }
     }
 
+    private void labelResizeRelocate() {
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < NUMBER_OF_LINE; j++) {
+                if (i % 2 == 0) {
+                    labelTranslate[i][j].setY((cell_height - labels[i][j].getMinWidth()) / 2);
+                    labelTranslate[i][j].setX((cell_width ) * (j + 2) - labels[i][j].getWidth()/2);
+                    //labels[i][j];
+                } else {
+                    labelTranslate[i][j].setX((cell_width - labels[i][j].getWidth()) / 2);
+                    labelTranslate[i][j].setY((cell_height ) * (j + 2) - labels[i][j].getHeight()/2);
+                    //labels[i][j];
+                }
+            }
+        }
+    }
+
     // private method for getting a piece on the board. this will return the board
     // value unless we access an index that doesn't exist. this is to make the code
     // for determining reverse chains much easier
@@ -198,13 +219,17 @@ class GoBoard extends Pane {
         }
     }
 
-    private void initLables()
-    {
-        for(int i=0; i<4; i++){
-            for (int j=0; j< NUMBER_OF_LINE; j++) {
+    private void initLabels() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < NUMBER_OF_LINE; j++) {
                 if (i % 2 == 0) {
-                    labels[i][j] = new Label("");
+                    labels[i][j] = new Label(String.valueOf((char) (j + 65)));
+                } else {
+                    labels[i][j] = new Label(String.valueOf(j + 1));
                 }
+                labelTranslate[i][j] = new Translate();
+                labels[i][j].getTransforms().add(labelTranslate[i][j]);
+                getChildren().add(labels[i][j]);
             }
         }
     }
