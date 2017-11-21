@@ -13,15 +13,14 @@ class Stone extends Group {
     // default constructor for the class
     public Stone(int player) {
         this.player = player;
-        this.piece = new Ellipse();
         t = new Translate();
-
+        this.piece = new Ellipse();
 
         piece.getTransforms().add(t);
 
         setEllipseColor();
 
-        piece.setVisible(player != 0);
+        piece.setVisible((player == 1 || player == 2));
         getChildren().add(piece);
     }
 
@@ -29,7 +28,6 @@ class Stone extends Group {
     @Override
     public void resize(double width, double height) {
         super.resize(width, height);
-
         piece.setCenterX(width / 2);
         piece.setCenterY(height / 2);
         piece.setRadiusX(width / 2);
@@ -53,7 +51,7 @@ class Stone extends Group {
     // method that will set the piece type
     public void setPiece(final int type) {
         player = type;
-        piece.setVisible(player != 0);
+        piece.setVisible((player == 1 || player == 2));
         setEllipseColor();
     }
 

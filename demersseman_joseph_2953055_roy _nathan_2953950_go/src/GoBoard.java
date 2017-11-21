@@ -22,7 +22,7 @@ class GoBoard extends Pane {
     private final Translate[] vertical_t;
     // arrays for the internal representation of the board and the pieces that are
     // in place
-    private final Stone[][] render;
+    public final Stone[][] render;
     // rectangle that makes the background of the board
     private Rectangle background;
     // the current player who is playing and who is his opposition
@@ -63,7 +63,7 @@ class GoBoard extends Pane {
         final int cx = (int) Math.round(((x - 2 * cell_width) / cell_width));
         final int cy = (int) Math.round((y - 2 * cell_height) / cell_height);
 
-        if (getPiece(cx, cy) != 0)
+        if (getPiece(cx, cy) == 1 ||getPiece(cx, cy) == 2)
             return;
         render[cx][cy].setPiece(current_player);
         swapPlayers();
