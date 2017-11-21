@@ -9,7 +9,7 @@ import javafx.scene.transform.Translate;
 //class definition for the reversi board
 class GoBoard extends Pane {
 
-    private static final int NUMBER_OF_LINE = 7;
+    public static final int NUMBER_OF_LINE = 7;
 
     private final Label[][] labels;
     private final Translate[][] labelTranslate;
@@ -22,7 +22,7 @@ class GoBoard extends Pane {
     private final Translate[] vertical_t;
     // arrays for the internal representation of the board and the pieces that are
     // in place
-    public final Stone[][] render;
+    private final Stone[][] render;
     // rectangle that makes the background of the board
     private Rectangle background;
     // the current player who is playing and who is his opposition
@@ -37,6 +37,8 @@ class GoBoard extends Pane {
     private double cell_width;
     private double cell_height;
 
+    private GameLogic gameLogic;
+
     // default constructor for the class
     public GoBoard() {
         render = new Stone[NUMBER_OF_LINE][NUMBER_OF_LINE];
@@ -46,7 +48,7 @@ class GoBoard extends Pane {
         vertical_t = new Translate[NUMBER_OF_LINE];
         labels = new Label[4][NUMBER_OF_LINE];
         labelTranslate = new Translate[4][NUMBER_OF_LINE];
-
+        gameLogic = new GameLogic(this);
 
         initialiseLinesBackground();
         initialiseRender();
@@ -63,9 +65,16 @@ class GoBoard extends Pane {
         final int cx = (int) Math.round(((x - 2 * cell_width) / cell_width));
         final int cy = (int) Math.round((y - 2 * cell_height) / cell_height);
 
-        if (getPiece(cx, cy) == 1 ||getPiece(cx, cy) == 2)
+        if (getPiece(cx, cy) == -1 || getPiece(cx, cy) == 1 || getPiece(cx, cy) == 2)
             return;
         render[cx][cy].setPiece(current_player);
+
+        gameLogic.captureOpposingPiece(cx, cy);
+
+        if (!gameLogic.hasEscape(new Coordinate(cx, cy), current_player)) {
+            render[cx][cy].setPiece(0);
+            return;
+        }
         swapPlayers();
     }
 
@@ -74,7 +83,6 @@ class GoBoard extends Pane {
     public void resize(double width, double height) {
         super.resize(width, height);
 
-        //calculation of the new cell dimensions
         cell_width = width / (NUMBER_OF_LINE + 3);
         cell_height = height / (NUMBER_OF_LINE + 3);
 
@@ -83,8 +91,8 @@ class GoBoard extends Pane {
         background.setHeight(height);
 
         //resize and relocate the lines
-        horizontalResizeRelocate(width);
-        verticalResizeRelocate(height);
+        horizontalResizeRelocate();
+        verticalResizeRelocate();
 
         //resize and relocate the pieces
         pieceResizeRelocate();
@@ -115,11 +123,6 @@ class GoBoard extends Pane {
 
         background = new Rectangle(800, 800, Color.PERU);
 
-/*
-        Label A = new Label("A");
-        Translate at= new Translate();
-        A.getTransforms().add(at);*/
-
         getChildren().add(background);
         for (int i = 0; i < NUMBER_OF_LINE; i++) {
             horizontal[i] = new Line();
@@ -143,19 +146,19 @@ class GoBoard extends Pane {
     }
 
     // private method for resizing and relocating the horizontal lines
-    private void horizontalResizeRelocate(final double width) {
+    private void horizontalResizeRelocate() {
         for (int i = 0; i < NUMBER_OF_LINE; i++) {
             horizontal[i].setStartX(2 * cell_width);
-            horizontal[i].setEndX(width - 2 * cell_width);
+            horizontal[i].setEndX((1 + NUMBER_OF_LINE) * cell_width);
             horizontal_t[i].setY(cell_height * i + 2 * cell_height);
         }
     }
 
     // private method for resizing and relocating the vertical lines
-    private void verticalResizeRelocate(final double height) {
+    private void verticalResizeRelocate() {
         for (int i = 0; i < NUMBER_OF_LINE; i++) {
             vertical[i].setStartY(2 * cell_height);
-            vertical[i].setEndY(height - 2 * cell_height);
+            vertical[i].setEndY((1 + NUMBER_OF_LINE) * cell_height);
             vertical_t[i].setX(cell_width * i + 2 * cell_width);
         }
     }
@@ -187,12 +190,12 @@ class GoBoard extends Pane {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < NUMBER_OF_LINE; j++) {
                 if (i % 2 == 0) {
-                    labelTranslate[i][j].setY((cell_height - labels[i][j].getMinWidth()) / 2);
-                    labelTranslate[i][j].setX((cell_width ) * (j + 2) - labels[i][j].getWidth()/2);
+                    labelTranslate[i][j].setX((cell_width) * (j + 2));
+                    labelTranslate[i][j].setY((cell_height) / 2);
                     //labels[i][j];
                 } else {
-                    labelTranslate[i][j].setX((cell_width - labels[i][j].getWidth()) / 2);
-                    labelTranslate[i][j].setY((cell_height ) * (j + 2) - labels[i][j].getHeight()/2);
+                    labelTranslate[i][j].setX((cell_width) / 2);
+                    labelTranslate[i][j].setY((cell_height) * (j + 2));
                     //labels[i][j];
                 }
             }
@@ -202,7 +205,7 @@ class GoBoard extends Pane {
     // private method for getting a piece on the board. this will return the board
     // value unless we access an index that doesn't exist. this is to make the code
     // for determining reverse chains much easier
-    private int getPiece(final int x, final int y) {
+    public int getPiece(final int x, final int y) {
         if (x >= NUMBER_OF_LINE || y >= NUMBER_OF_LINE || x < 0 || y < 0) {
             return -1;
         }
@@ -233,4 +236,18 @@ class GoBoard extends Pane {
             }
         }
     }
+
+    public void changePieceIn(int x, int y, int type) {
+        if (getPiece(x, y) != -1)
+            render[x][y].setPiece(type);
+    }
+
+    public int getCurrent_player() {
+        return current_player;
+    }
+
+    public int getOpposing() {
+        return opposing;
+    }
+
 }
