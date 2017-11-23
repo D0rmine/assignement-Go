@@ -52,6 +52,7 @@ public class GameLogic {
     public void captureOpposingPiece(int x, int y) {
         int opposing = board.getOpposing();
         // see if an opponent piece is near
+        listOfPieceVerified.clear();
         if (board.getPiece(x - 1, y) == opposing) {
             if (!hasEscape(new Coordinate(x - 1, y), opposing))
                 removeCapturedPiece();
