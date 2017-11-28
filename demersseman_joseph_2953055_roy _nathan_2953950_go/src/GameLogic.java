@@ -1,3 +1,5 @@
+import sun.security.ssl.Debug;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -5,9 +7,17 @@ public class GameLogic {
 
     private GoBoard board;
     private List<Coordinate> listOfPieceVerified;
+    private Stone[][] renderLastTurnWhite;
+    private Stone[][] renderLastTurnBlack;
+    private int LastScoreWhite;
+    private int LastScoreBlack;
 
     public GameLogic(GoBoard board) {
         this.board = board;
+        renderLastTurnBlack = null;
+        renderLastTurnWhite = null;
+        LastScoreBlack = 0;
+        LastScoreWhite = 0;
         listOfPieceVerified = new ArrayList<>();
     }
 
@@ -149,6 +159,55 @@ public class GameLogic {
     private void removeCapturedPiece() {
         for (Coordinate coordinate : listOfPieceVerified) {
             board.changePieceIn(coordinate.getX(), coordinate.getY(), 0);
+        }
+    }
+
+    private boolean IsTheSameBoard(Stone[][] render1, Stone[][] render2)
+    {
+        if (render2 == null)
+            return false;
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (render1[i][j].getPiece() != render2[i][j].getPiece())
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private Stone[][] copyBoard(Stone[][] Render){
+        Stone[][] newRender = new Stone[7][7];
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 7; j++) {
+                newRender[i][j] = new Stone(0);
+                newRender[i][j].setPiece(Render[i][j].getPiece());
+            }
+        }
+        return newRender;
+    }
+
+    public boolean CheckKORule(Stone[][] render, int player, int score){
+        if (IsTheSameBoard(render, renderLastTurnWhite) && player == 1 && renderLastTurnBlack != null)
+        {
+            board.setRender(renderLastTurnBlack);
+            board.setScore(LastScoreWhite, player);
+            return true;
+        }
+        else if (player == 1) {
+            renderLastTurnWhite = copyBoard(render);
+            LastScoreWhite = score;
+            return false;
+        }
+        else if (IsTheSameBoard(render,renderLastTurnBlack) && renderLastTurnWhite != null)
+        {
+            board.setRender(renderLastTurnWhite);
+            board.setScore(LastScoreBlack, player);
+            return true;
+        }
+        else {
+            renderLastTurnBlack = copyBoard(render);
+            LastScoreBlack = score;
+            return false;
         }
     }
 }

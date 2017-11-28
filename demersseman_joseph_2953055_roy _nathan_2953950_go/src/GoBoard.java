@@ -56,6 +56,8 @@ class GoBoard extends Pane {
         resetGame();
     }
 
+
+
     // public method that will try to place a piece in the given x,y coordinate
     public void placePiece(final double x, final double y) {
 
@@ -75,7 +77,15 @@ class GoBoard extends Pane {
             render[cx][cy].setPiece(0);
             return;
         }
-        swapPlayers();
+        if (current_player == 0) {
+            if (!gameLogic.CheckKORule(render, current_player, player1_score))
+                swapPlayers();
+        }
+        else{
+            if (!gameLogic.CheckKORule(render, current_player, player2_score))
+                swapPlayers();
+        }
+
     }
 
     // overridden version of the resize method to give the board the correct size
@@ -116,6 +126,21 @@ class GoBoard extends Pane {
                 render[i][j].setPiece(0);
             }
         }
+    }
+
+    public void setRender(Stone[][] newRender){
+        for (int i = 0; i < NUMBER_OF_LINE; i++) {
+            for (int j = 0; j < NUMBER_OF_LINE; j++) {
+                render[i][j].setPiece(newRender[i][j].getPiece());
+            }
+        }
+    }
+
+    public void setScore(int newScore, int player){
+        if (player == 0)
+            player1_score = newScore;
+        if (player == 1)
+            player2_score = newScore;
     }
 
     // private method that will initialise the background and the lines
