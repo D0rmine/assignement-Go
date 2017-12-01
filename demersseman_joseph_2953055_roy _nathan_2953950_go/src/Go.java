@@ -25,7 +25,6 @@ public class Go extends Application {
     // private fields for a stack pane and a reversi control
     private StackPane stackPaneMainLayout;
     private CustomControl goControl;
-
     private HBox mainHBox;
 
     // entry point into our program for launching our javafx application
@@ -40,11 +39,15 @@ public class Go extends Application {
 
         mainHBox = new HBox();
         stackPaneMainLayout = new StackPane();
-        goControl = new CustomControl();
+
+        Hud hud = new Hud();
+        hud.setMinWidth(Hud.HUD_WIDTH);
+
+        goControl = new CustomControl(hud);
         stackPaneMainLayout.getChildren().add(goControl);
 
-        mainHBox.getChildren().addAll(stackPaneMainLayout);
-        //       mainHBox.getChildren().add(stackPaneMainLayout);
+        mainHBox.getChildren().addAll(hud,stackPaneMainLayout);
+
         HBox.setHgrow(stackPaneMainLayout, Priority.ALWAYS);
     }
 
@@ -52,7 +55,9 @@ public class Go extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("GO");
-        primaryStage.setScene(new Scene(mainHBox, 800, 800));
+        primaryStage.setScene(new Scene(mainHBox, 1000+Hud.HUD_WIDTH, 1000));
         primaryStage.show();
     }
+
+
 }

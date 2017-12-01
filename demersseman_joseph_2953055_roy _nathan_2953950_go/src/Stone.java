@@ -1,5 +1,4 @@
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.transform.Translate;
 
@@ -58,6 +57,6 @@ class Stone extends Group {
 
     //set Ellipse Color in function of player
     private void setEllipseColor() {
-        piece.setFill((player == 1) ? Color.WHITE : Color.BLACK);
+        piece.setFill((player == 1) ? Sprites.PLAYER_1 : Sprites.PLAYER_2);
     }
 }

@@ -1,6 +1,5 @@
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Translate;
@@ -10,6 +9,7 @@ import javafx.scene.transform.Translate;
 class GoBoard extends Pane {
 
     public static final int NUMBER_OF_LINE = 7;
+    private static final int LABEL_SIZE = 16;
 
     private final Label[][] labels;
     private final Translate[][] labelTranslate;
@@ -38,9 +38,10 @@ class GoBoard extends Pane {
     private double cell_height;
 
     private GameLogic gameLogic;
+    private Hud hud;
 
     // default constructor for the class
-    public GoBoard() {
+    public GoBoard(Hud hud) {
         render = new Stone[NUMBER_OF_LINE][NUMBER_OF_LINE];
         horizontal = new Line[NUMBER_OF_LINE];
         vertical = new Line[NUMBER_OF_LINE];
@@ -50,12 +51,13 @@ class GoBoard extends Pane {
         labelTranslate = new Translate[4][NUMBER_OF_LINE];
         gameLogic = new GameLogic(this);
 
+        this.hud = hud;
+
         initialiseLinesBackground();
         initialiseRender();
         initLabels();
         resetGame();
     }
-
 
 
     // public method that will try to place a piece in the given x,y coordinate
@@ -80,12 +82,15 @@ class GoBoard extends Pane {
         if (current_player == 0) {
             if (!gameLogic.CheckKORule(render, current_player, player1_score))
                 swapPlayers();
-        }
-        else{
+        } else {
             if (!gameLogic.CheckKORule(render, current_player, player2_score))
                 swapPlayers();
         }
 
+    }
+
+    public void passTurn() {
+        swapPlayers();
     }
 
     // overridden version of the resize method to give the board the correct size
@@ -93,8 +98,8 @@ class GoBoard extends Pane {
     public void resize(double width, double height) {
         super.resize(width, height);
 
-        cell_width = width / (NUMBER_OF_LINE + 3);
-        cell_height = height / (NUMBER_OF_LINE + 3);
+        cell_width = Math.round(width / (NUMBER_OF_LINE + 3));
+        cell_height = Math.round(height / (NUMBER_OF_LINE + 3));
 
         //set the new dimensions of the Background rectangle
         background.setWidth(width);
@@ -117,6 +122,8 @@ class GoBoard extends Pane {
         opposing = 1;
         player1_score = 0;
         player2_score = 0;
+        hud.setPlayerScore(player1_score, player2_score);
+        hud.setCurrentPlayerTurn(current_player);
     }
 
     // private method that will reset the renders
@@ -128,7 +135,7 @@ class GoBoard extends Pane {
         }
     }
 
-    public void setRender(Stone[][] newRender){
+    public void setRender(Stone[][] newRender) {
         for (int i = 0; i < NUMBER_OF_LINE; i++) {
             for (int j = 0; j < NUMBER_OF_LINE; j++) {
                 render[i][j].setPiece(newRender[i][j].getPiece());
@@ -136,17 +143,19 @@ class GoBoard extends Pane {
         }
     }
 
-    public void setScore(int newScore, int player){
+    public void setScore(int newScore, int player) {
         if (player == 0)
             player1_score = newScore;
         if (player == 1)
             player2_score = newScore;
+
+        hud.setPlayerScore(player1_score, player2_score);
     }
 
     // private method that will initialise the background and the lines
     private void initialiseLinesBackground() {
 
-        background = new Rectangle(800, 800, Color.PERU);
+        background = new Rectangle(800, 800, Sprites.BACKGROUND);
 
         getChildren().add(background);
         for (int i = 0; i < NUMBER_OF_LINE; i++) {
@@ -197,6 +206,7 @@ class GoBoard extends Pane {
             current_player = 1;
             opposing = 2;
         }
+        hud.setCurrentPlayerTurn(current_player);
     }
 
     // private method for resizing and relocating all the pieces
@@ -215,13 +225,17 @@ class GoBoard extends Pane {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < NUMBER_OF_LINE; j++) {
                 if (i % 2 == 0) {
-                    labelTranslate[i][j].setX((cell_width) * (j + 2));
-                    labelTranslate[i][j].setY((cell_height) / 2);
-                    //labels[i][j];
+                    labelTranslate[i][j].setX((cell_width) * (j + 2) - LABEL_SIZE / 2);
+                    if (i == 0)
+                        labelTranslate[i][j].setY((cell_height) / 2);
+                    else
+                        labelTranslate[i][j].setY((cell_height) / 4 + cell_height * (NUMBER_OF_LINE + 2));
                 } else {
-                    labelTranslate[i][j].setX((cell_width) / 2);
-                    labelTranslate[i][j].setY((cell_height) * (j + 2));
-                    //labels[i][j];
+                    if (i == 1)
+                        labelTranslate[i][j].setX((cell_width) / 2);
+                    else
+                        labelTranslate[i][j].setX((cell_width) / 4 + cell_width * (NUMBER_OF_LINE + 2));
+                    labelTranslate[i][j].setY((cell_height) * (j + 2) - LABEL_SIZE / 2);
                 }
             }
         }
@@ -251,12 +265,16 @@ class GoBoard extends Pane {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < NUMBER_OF_LINE; j++) {
                 if (i % 2 == 0) {
+                    //j + 65 because it is A in ascii form
                     labels[i][j] = new Label(String.valueOf((char) (j + 65)));
                 } else {
+                    //j + 1 to begin with 1
                     labels[i][j] = new Label(String.valueOf(j + 1));
                 }
                 labelTranslate[i][j] = new Translate();
                 labels[i][j].getTransforms().add(labelTranslate[i][j]);
+                labels[i][j].setMinHeight(LABEL_SIZE);
+                labels[i][j].setMinWidth(LABEL_SIZE);
                 getChildren().add(labels[i][j]);
             }
         }
