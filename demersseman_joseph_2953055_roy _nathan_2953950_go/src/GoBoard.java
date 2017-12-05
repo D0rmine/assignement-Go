@@ -36,12 +36,14 @@ class GoBoard extends Pane {
     // the width and height of a cell in the board
     private double cell_width;
     private double cell_height;
+    private int passConsecutive = 0;
 
     private GameLogic gameLogic;
     private Hud hud;
 
     // default constructor for the class
     public GoBoard(Hud hud) {
+        passConsecutive = 0;
         render = new Stone[NUMBER_OF_LINE][NUMBER_OF_LINE];
         horizontal = new Line[NUMBER_OF_LINE];
         vertical = new Line[NUMBER_OF_LINE];
@@ -86,11 +88,47 @@ class GoBoard extends Pane {
             if (!gameLogic.CheckKORule(render, current_player, player2_score))
                 swapPlayers();
         }
-
+        hud.setPlayerScore(player1_score, player2_score);
+        passConsecutive = 0;
     }
 
     public void passTurn() {
+        if (current_player == 1)
+            player2_score++;
+        if (current_player == 2)
+            player1_score++;
         swapPlayers();
+        hud.setPlayerScore(player1_score, player2_score);
+        passConsecutive++;
+        if (passConsecutive >= 2)
+            EndOfTheGame();
+    }
+
+    private void EndOfTheGame(){
+        for (int i = 0; i < NUMBER_OF_LINE; i++) {
+            for (int j = 0; j < NUMBER_OF_LINE; j++) {
+                if (render[i][j].getPiece() == 1 || render[i][j].getPiece() == 2)
+                {
+                    gameLogic.CheckTeritoryFromPiece(i, j);
+                }
+            }
+        }
+        for (int i = 0; i < NUMBER_OF_LINE; i++) {
+            for (int j = 0; j < NUMBER_OF_LINE; j++) {
+                if (render[i][j].getPiece() == 3)
+                    player1_score++;
+                if (render[i][j].getPiece() == 4)
+                    player2_score++;
+            }
+        }
+        hud.setPlayerScore(player1_score, player2_score);
+        if (player1_score > player2_score)
+            System.out.println("White win");
+        else if (player2_score > player1_score)
+            System.out.println("Black win");
+        else
+            System.out.println("Equality");
+        in_play = false;
     }
 
     // overridden version of the resize method to give the board the correct size
@@ -281,8 +319,13 @@ class GoBoard extends Pane {
     }
 
     public void changePieceIn(int x, int y, int type) {
-        if (getPiece(x, y) != -1)
+        if (getPiece(x, y) != -1) {
+            if (render[x][y].getPiece() == 1)
+                player2_score++;
+            else if (render[x][y].getPiece() == 2)
+                player1_score++;
             render[x][y].setPiece(type);
+        }
     }
 
     public int getCurrent_player() {

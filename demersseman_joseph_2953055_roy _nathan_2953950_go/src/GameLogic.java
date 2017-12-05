@@ -21,28 +21,65 @@ public class GameLogic {
         listOfPieceVerified = new ArrayList<>();
     }
 
-    public void checkTeritory(int player, int x, int y) {
-        if (board.getPiece(x, y) == ((player % 2) + 1))
-            neutralSet(x, y);
+    public void CheckTeritoryFromPiece(int x, int y){
+        if (x > 0) {
+            if(board.getPiece((x - 1), y) == 0)
+                checkTeritory(board.getPiece(x, y), (x - 1), y);
+            if (y > 1) {
+                if(board.getPiece((x - 1), (y - 1)) == 0)
+                    checkTeritory(board.getPiece(x, y), (x - 1), (y - 1));
+            }
+        }
+        if (x < GoBoard.NUMBER_OF_LINE) {
+            if(board.getPiece((x + 1), y) == 0)
+                checkTeritory(board.getPiece(x, y), (x + 1), y);
+            if (y < GoBoard.NUMBER_OF_LINE) {
+                if(board.getPiece((x + 1), (y + 1)) == 0)
+                    checkTeritory(board.getPiece(x, y), (x + 1), (y + 1));
+            }
+        }
+    }
+
+    private void checkTeritory(int player, int x, int y) {
         if (board.getPiece(x, y) != 0)
             return;
         board.changePieceIn(x,y,player + 2);
         if (x > 0) {
-            checkTeritory(player, (x - 1), y);
+            if (board.getPiece((x - 1), y) == ((player % 2) + 1)) {
+                neutralSet(x, y);
+                return;
+            }
+                checkTeritory(player, (x - 1), y);
             if (y > 0) {
-                checkTeritory(player, (x - 1), (y - 1));
+                if (board.getPiece((x - 1), (y - 1)) == ((player % 2) + 1)) {
+                    neutralSet(x, y);
+                    return;
+                }
+                    checkTeritory(player, (x - 1), (y - 1));
             }
         }
-        if (x < 7) {
-            checkTeritory(player, (x + 1), y);
-            if (y < 7) {
-                checkTeritory(player, (x + 1), (y + 1));
+        if (x < GoBoard.NUMBER_OF_LINE) {
+            if (board.getPiece((x + 1), y) == ((player % 2) + 1)) {
+                neutralSet(x, y);
+                return;
+            }
+                checkTeritory(player, (x + 1), y);
+            if (y < GoBoard.NUMBER_OF_LINE) {
+                if (board.getPiece((x + 1), (y + 1)) == ((player % 2) + 1)) {
+                    neutralSet(x, y);
+                    return;
+                }
+                    checkTeritory(player, (x + 1), (y + 1));
             }
         }
     }
 
     private void neutralSet(int x, int y) {
+        if (board.getPiece(x, y) == -1)
+            return;
         if (board.getPiece(x, y) == 1 || board.getPiece(x, y) == 2)
+            return;
+        if ( board.getPiece(x, y) == 5)
             return;
         board.changePieceIn(x,y,5);
         if (x > 0) {
@@ -51,9 +88,9 @@ public class GameLogic {
                 neutralSet((x - 1), (y - 1));
             }
         }
-        if (x < 7) {
+        if (x < GoBoard.NUMBER_OF_LINE) {
             neutralSet((x + 1), y);
-            if (y < 7) {
+            if (y < GoBoard.NUMBER_OF_LINE) {
                 neutralSet((x + 1), (y + 1));
             }
         }

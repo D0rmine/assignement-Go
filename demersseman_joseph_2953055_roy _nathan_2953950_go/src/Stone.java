@@ -51,8 +51,10 @@ class Stone extends Group {
     // method that will set the piece type
     public void setPiece(final int type) {
         player = type;
-        piece.setVisible((player == 1 || player == 2));
-        setEllipseColor();
+        if (player == 1 || player == 2 || player == 0) {
+            piece.setVisible((player == 1 || player == 2));
+            setEllipseColor();
+        }
     }
 
     //set Ellipse Color in function of player
