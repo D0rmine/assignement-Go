@@ -75,10 +75,12 @@ class GoBoard extends Pane {
 
         gameLogic.captureOpposingPiece(cx, cy);
 
-        if (!gameLogic.hasEscape(new Coordinate(cx, cy), current_player)) {
+        //check if the piece have an escape
+        if (!gameLogic.sucideRule(cx, cy, current_player)) {
             render[cx][cy].setPiece(0);
             return;
         }
+
         if (current_player == 0) {
             if (!gameLogic.CheckKORule(render, current_player, player1_score))
                 swapPlayers();
