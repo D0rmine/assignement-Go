@@ -16,14 +16,6 @@ class CustomControl extends Control {
         //place a piece when a player click in the board
         setOnMousePressed(event -> goBoard.placePiece(event.getSceneX() - Hud.HUD_WIDTH, event.getSceneY()));
 
-        //reset the game when the SpaceBar is pressed
-        setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.SPACE) {
-                goBoard.resetGame();
-            }
-        });
-
-
         hud.setGoBoardWeakReference(new WeakReference<>(goBoard));
 
         //add goBoard to the control

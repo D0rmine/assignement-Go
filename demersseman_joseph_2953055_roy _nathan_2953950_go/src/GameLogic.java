@@ -83,7 +83,6 @@ public class GameLogic {
                 removeCapturedPiece();
         }
         listOfPieceVerified.clear();
-
     }
 
     private boolean checkEscapeNear(Coordinate coordinate) {
