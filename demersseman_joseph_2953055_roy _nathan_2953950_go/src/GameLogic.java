@@ -141,13 +141,14 @@ public class GameLogic {
 
     public boolean hasEscape(Coordinate coordinate, int stonePossessor) {
         Coordinate tmp;
-        boolean nearEscape = checkEscapeNear(coordinate);
 
         listOfPieceVerified.add(coordinate);
-        if (nearEscape)
+
+        //check if the piece has a escape near him
+        if (checkEscapeNear(coordinate))
             return true;
 
-        //checkIf currentPlayerNear
+        //check if a piece near him has the same color, if it is true check if the piece has also some escapes
         if (board.getPiece(coordinate.getX() - 1, coordinate.getY()) == stonePossessor) {
             tmp = new Coordinate(coordinate.getX() - 1, coordinate.getY());
 
@@ -245,5 +246,10 @@ public class GameLogic {
             LastScoreBlack = score;
             return false;
         }
+    }
+
+    public boolean sucideRule(int cx, int cy, int playerPiece)
+    {
+        return hasEscape(new Coordinate(cx, cy), playerPiece);
     }
 }
