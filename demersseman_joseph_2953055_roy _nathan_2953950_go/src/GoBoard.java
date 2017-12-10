@@ -99,18 +99,17 @@ class GoBoard extends Pane {
             player2_score++;
         if (current_player == 2)
             player1_score++;
-        swapPlayers();
         hud.setPlayerScore(player1_score, player2_score);
         passConsecutive++;
         if (passConsecutive >= 2)
             EndOfTheGame();
+        swapPlayers();
     }
 
-    private void EndOfTheGame(){
+    private void EndOfTheGame() {
         for (int i = 0; i < NUMBER_OF_LINE; i++) {
             for (int j = 0; j < NUMBER_OF_LINE; j++) {
-                if (render[i][j].getPiece() == 1 || render[i][j].getPiece() == 2)
-                {
+                if (render[i][j].getPiece() == 1 || render[i][j].getPiece() == 2) {
                     gameLogic.CheckTeritoryFromPiece(i, j);
                 }
             }
@@ -163,7 +162,7 @@ class GoBoard extends Pane {
         player1_score = 0;
         player2_score = 0;
         hud.setPlayerScore(player1_score, player2_score);
-        hud.setCurrentPlayerTurn(current_player);
+        hud.setCurrentPlayerTurn(current_player, in_play);
     }
 
     // private method that will reset the renders
@@ -246,7 +245,7 @@ class GoBoard extends Pane {
             current_player = 1;
             opposing = 2;
         }
-        hud.setCurrentPlayerTurn(current_player);
+        hud.setCurrentPlayerTurn(current_player, in_play);
     }
 
     // private method for resizing and relocating all the pieces

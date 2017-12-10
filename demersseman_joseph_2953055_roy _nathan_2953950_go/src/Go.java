@@ -4,20 +4,10 @@
 //imports
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Control;
-import javafx.scene.control.SkinBase;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Translate;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 //class definition for reversi game
@@ -26,6 +16,7 @@ public class Go extends Application {
     private StackPane stackPaneMainLayout;
     private CustomControl goControl;
     private HBox mainHBox;
+    private Hud hud;
 
     // entry point into our program for launching our javafx application
     public static void main(String[] args) {
@@ -40,13 +31,13 @@ public class Go extends Application {
         mainHBox = new HBox();
         stackPaneMainLayout = new StackPane();
 
-        Hud hud = new Hud();
+        hud = new Hud();
         hud.setMinWidth(Hud.HUD_WIDTH);
 
         goControl = new CustomControl(hud);
         stackPaneMainLayout.getChildren().add(goControl);
 
-        mainHBox.getChildren().addAll(hud,stackPaneMainLayout);
+        mainHBox.getChildren().addAll(hud, stackPaneMainLayout);
 
         HBox.setHgrow(stackPaneMainLayout, Priority.ALWAYS);
     }
@@ -55,9 +46,8 @@ public class Go extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("GO");
-        primaryStage.setScene(new Scene(mainHBox, 1000+Hud.HUD_WIDTH, 1000));
+        primaryStage.setScene(new Scene(mainHBox, 1000 + Hud.HUD_WIDTH, 1000));
         primaryStage.show();
+        hud.setProgressIndicatorProperty();
     }
-
-
 }
