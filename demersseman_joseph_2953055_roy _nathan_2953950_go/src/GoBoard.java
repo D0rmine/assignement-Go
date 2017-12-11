@@ -125,15 +125,6 @@ class GoBoard extends Pane {
             }
         }
 
-        for (int i = 0; i < NUMBER_OF_LINE; i++) {
-            for (int j = 0; j < NUMBER_OF_LINE; j++) {
-                System.out.print(render[j][i].getPiece());
-            }
-            System.out.println("");
-        }
-
-        System.out.println();
-
         hud.setPlayerScore(player1_score, player2_score);
         if (player1_score > player2_score)
             System.out.println("White win");
