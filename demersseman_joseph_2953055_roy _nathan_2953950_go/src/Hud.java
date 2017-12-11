@@ -166,9 +166,14 @@ public class Hud extends VBox {
     }
 
     public void setCurrentPlayerTurn(int currentPlayer, boolean play) {
-        setEllipseColor(currentPlayer);
-        if (play)
+        if (play) {
+            setEllipseColor(currentPlayer);
             resetTimer();
+        }
+        else
+        {
+            playerTimer.cancel(true);
+        }
     }
 
     private void setEllipseColor(int currentPlayer) {
