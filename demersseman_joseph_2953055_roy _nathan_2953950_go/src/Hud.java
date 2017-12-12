@@ -41,23 +41,21 @@ public class Hud extends VBox {
 
         StackPane panePlayerTurn = new StackPane();
 
+        panePlayerTurn.setStyle("-fx-background-color: #FFFFFF;");
+
         //Ellipse who symbolize the current player
         playerEllipse = new Ellipse();
         playerEllipse.setRadiusX(25);
         playerEllipse.setRadiusY(25);
-
         progressIndicator = new ProgressIndicator(0);
 
+        progressIndicator.setPrefSize( 125, 125 );
+
         progressIndicator.setAccessibleText("");
-        progressIndicator.setProgress(0);
-        progressIndicator.setScaleX(2.5);
-        progressIndicator.setScaleY(2.5);
-
-        progressIndicator.setPadding(new Insets(21.1, 0, 0, 0));
-
-        panePlayerTurn.getChildren().addAll(progressIndicator, playerEllipse);
+        panePlayerTurn.getChildren().add(progressIndicator);
+        panePlayerTurn.getChildren().add(playerEllipse);
         StackPane.setAlignment(playerEllipse, Pos.CENTER);
-        StackPane.setAlignment(progressIndicator, Pos.CENTER);
+        progressIndicator.setCenterShape(true);
 
         Label player1ScoreText = new Label("Player 1 : ");
         //set Margin for putting space between ellipse and label (for the top) and label and label (for the bottom)
@@ -205,6 +203,7 @@ public class Hud extends VBox {
             if (text != null) {
                 text.setText("");
                 progressIndicator.setPrefWidth(text.getLayoutBounds().getWidth());
+                progressIndicator.setPadding(new Insets(text.getLayoutBounds().getHeight(),0,0,0));
             }
             if (newValue.doubleValue() >= 1) {
                 passTurn();
