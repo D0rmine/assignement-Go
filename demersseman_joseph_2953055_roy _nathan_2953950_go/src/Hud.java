@@ -36,19 +36,19 @@ public class Hud extends VBox {
     public Hud() {
 
         Label playerLabel = new Label("Turn : ");
-        //set Margin for putting space between label and ellipse
+        //set Margin for putting space between label and ellipse superpose
         setMargin(playerLabel, new Insets(0, 0, 20, 0));
 
+        //panel to put the ellipse of the player and the timer
         StackPane panePlayerTurn = new StackPane();
-
-        panePlayerTurn.setStyle("-fx-background-color: #FFFFFF;");
 
         //Ellipse who symbolize the current player
         playerEllipse = new Ellipse();
         playerEllipse.setRadiusX(25);
         playerEllipse.setRadiusY(25);
-        progressIndicator = new ProgressIndicator(0);
 
+        //timer
+        progressIndicator = new ProgressIndicator(0);
         progressIndicator.setPrefSize( 125, 125 );
 
         progressIndicator.setAccessibleText("");
