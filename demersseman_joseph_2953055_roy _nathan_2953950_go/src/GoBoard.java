@@ -75,10 +75,11 @@ class GoBoard extends Pane {
             return;
         render[cx][cy].setPiece(current_player);
 
+        //check if the piece has capture a group
         gameLogic.captureOpposingPiece(cx, cy);
 
         //check if the piece have an escape
-        if (!gameLogic.sucideRule(cx, cy, current_player)) {
+        if (!gameLogic.suicideRule(cx, cy, current_player)) {
             render[cx][cy].setPiece(0);
             return;
         }

@@ -49,7 +49,7 @@ public class Hud extends VBox {
 
         //timer
         progressIndicator = new ProgressIndicator(0);
-        progressIndicator.setPrefSize( 125, 125 );
+        progressIndicator.setPrefSize(125, 125);
 
         progressIndicator.setAccessibleText("");
         panePlayerTurn.getChildren().add(progressIndicator);
@@ -167,9 +167,7 @@ public class Hud extends VBox {
         if (play) {
             setEllipseColor(currentPlayer);
             resetTimer();
-        }
-        else
-        {
+        } else {
             playerTimer.cancel(true);
         }
     }
@@ -203,7 +201,7 @@ public class Hud extends VBox {
             if (text != null) {
                 text.setText("");
                 progressIndicator.setPrefWidth(text.getLayoutBounds().getWidth());
-                progressIndicator.setPadding(new Insets(text.getLayoutBounds().getHeight(),0,0,0));
+                progressIndicator.setPadding(new Insets(text.getLayoutBounds().getHeight(), 0, 0, 0));
             }
             if (newValue.doubleValue() >= 1) {
                 passTurn();

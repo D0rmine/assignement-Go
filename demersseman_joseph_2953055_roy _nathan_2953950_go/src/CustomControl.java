@@ -1,5 +1,4 @@
 import javafx.scene.control.Control;
-import javafx.scene.input.KeyCode;
 
 import java.lang.ref.WeakReference;
 

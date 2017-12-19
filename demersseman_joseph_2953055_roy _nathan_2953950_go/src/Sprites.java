@@ -1,8 +1,6 @@
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 
-import javax.swing.*;
-
 public class Sprites {
     // Background sprites
     public static final ImagePattern BACKGROUND = new ImagePattern(new Image("file:sprites/background.png"));
